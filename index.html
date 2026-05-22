@@ -421,83 +421,14 @@
         document.getElementById("appShell").classList.remove("hidden");
       }
 
-      function pageId(page) {
-        return `page-${String(page).padStart(3, "0")}`;
-      }
-
-      function pageSrc(page) {
-        return `./pages/${pageId(page)}.jpg`;
-      }
-
-      function getSectionByPage(page) {
-        return sections.find((section) => page >= section.start && page <= section.end) || sections[0];
-      }
-
-      function scrollToPage(page) {
-        const el = document.getElementById(pageId(page));
-        if (!el) return;
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
-      function scrollToSection(sectionName) {
-        const section = sections.find((item) => item.name === sectionName);
-        if (!section) return;
-        document.getElementById("sectionSelect").value = section.name;
-        scrollToPage(section.start);
-      }
-
-      function createNavLink(sectionName, startPage) {
-        const link = document.createElement("a");
-        link.className = "section-link";
-        link.href = `#${pageId(startPage)}`;
-        link.dataset.section = sectionName;
-        link.textContent = sectionName;
-        return link;
-      }
-
-      function setActiveSection(name) {
-        document.querySelectorAll(".section-link").forEach((link) => {
-          link.classList.toggle("active", link.dataset.section === name);
-        });
-      }
-
-      function boot() {
-        const accessScreen = document.getElementById("accessScreen");
-        const appShell = document.getElementById("appShell");
-        const accessForm = document.getElementById("accessForm");
-        const passwordInput = document.getElementById("passwordInput");
-        const accessError = document.getElementById("accessError");
-
-        if (!hasValidLink()) {
-          accessScreen.classList.remove("hidden");
-          accessForm.classList.add("hidden");
-          accessError.textContent = "这个链接无效，请让发送人重新发完整链接。";
-          return;
-        }
-
-        if (!hasValidPassword()) {
-          accessScreen.classList.remove("hidden");
-          passwordInput.focus();
-          accessForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-            if (passwordInput.value === ACCESS_PASSWORD) {
-              window.sessionStorage.setItem(ACCESS_STORAGE_KEY, "ok");
-              accessError.textContent = "";
-              revealApp();
-            } else {
-              accessError.textContent = "密码不对。";
-              passwordInput.select();
-            }
-          });
-          return;
-        }
-
-        appShell.classList.remove("hidden");
-
+      function initApp() {
         const pagesEl = document.getElementById("pages");
         const sectionSelectEl = document.getElementById("sectionSelect");
         const sectionNavDesktopEl = document.getElementById("sectionNavDesktop");
         const sectionNavMobileEl = document.getElementById("sectionNavMobile");
+
+        if (pagesEl.dataset.initialized === "true") return;
+        pagesEl.dataset.initialized = "true";
 
         sections.forEach((section) => {
           const option = document.createElement("option");
@@ -566,6 +497,82 @@
 
         sectionSelectEl.value = "品牌介绍";
         setActiveSection("品牌介绍");
+      }
+
+      function pageId(page) {
+        return `page-${String(page).padStart(3, "0")}`;
+      }
+
+      function pageSrc(page) {
+        return `./pages/${pageId(page)}.jpg`;
+      }
+
+      function getSectionByPage(page) {
+        return sections.find((section) => page >= section.start && page <= section.end) || sections[0];
+      }
+
+      function scrollToPage(page) {
+        const el = document.getElementById(pageId(page));
+        if (!el) return;
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function scrollToSection(sectionName) {
+        const section = sections.find((item) => item.name === sectionName);
+        if (!section) return;
+        document.getElementById("sectionSelect").value = section.name;
+        scrollToPage(section.start);
+      }
+
+      function createNavLink(sectionName, startPage) {
+        const link = document.createElement("a");
+        link.className = "section-link";
+        link.href = `#${pageId(startPage)}`;
+        link.dataset.section = sectionName;
+        link.textContent = sectionName;
+        return link;
+      }
+
+      function setActiveSection(name) {
+        document.querySelectorAll(".section-link").forEach((link) => {
+          link.classList.toggle("active", link.dataset.section === name);
+        });
+      }
+
+      function boot() {
+        const accessScreen = document.getElementById("accessScreen");
+        const appShell = document.getElementById("appShell");
+        const accessForm = document.getElementById("accessForm");
+        const passwordInput = document.getElementById("passwordInput");
+        const accessError = document.getElementById("accessError");
+
+        if (!hasValidLink()) {
+          accessScreen.classList.remove("hidden");
+          accessForm.classList.add("hidden");
+          accessError.textContent = "这个链接无效，请让发送人重新发完整链接。";
+          return;
+        }
+
+        if (!hasValidPassword()) {
+          accessScreen.classList.remove("hidden");
+          passwordInput.focus();
+          accessForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (passwordInput.value === ACCESS_PASSWORD) {
+              window.sessionStorage.setItem(ACCESS_STORAGE_KEY, "ok");
+              accessError.textContent = "";
+              revealApp();
+              initApp();
+            } else {
+              accessError.textContent = "密码不对。";
+              passwordInput.select();
+            }
+          });
+          return;
+        }
+
+        appShell.classList.remove("hidden");
+        initApp();
       }
 
       boot();
