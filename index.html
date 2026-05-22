@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>价目册</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+        background: #f3f4f6;
+        color: #111827;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid #e5e7eb;
+        backdrop-filter: blur(10px);
+      }
+
+      .title {
+        min-width: 0;
+        flex: 1;
+        font-size: 16px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .button,
+      .section-select {
+        min-height: 38px;
+        border: 0;
+        border-radius: 10px;
+        font-size: 14px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        background: #111827;
+        color: #fff;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .section-select {
+        min-width: 140px;
+        padding: 0 12px;
+        background: #fff;
+        border: 1px solid #d1d5db;
+      }
+
+      .section-nav {
+        position: sticky;
+        top: 59px;
+        z-index: 25;
+        display: flex;
+        gap: 8px;
+        padding: 10px 12px;
+        overflow-x: auto;
+        background: rgba(243, 244, 246, 0.96);
+        border-bottom: 1px solid #e5e7eb;
+        backdrop-filter: blur(10px);
+      }
+
+      .section-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        color: #111827;
+        text-decoration: none;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      .section-link.active {
+        background: #111827;
+        color: #fff;
+        border-color: #111827;
+      }
+
+      .hint {
+        padding: 10px 16px 0;
+        color: #6b7280;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .pages {
+        width: min(100%, 980px);
+        margin: 0 auto;
+        padding: 16px 12px 40px;
+      }
+
+      .section-block {
+        margin-bottom: 18px;
+      }
+
+      .section-heading {
+        position: sticky;
+        top: 111px;
+        z-index: 10;
+        margin: 0 0 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #e5e7eb;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .page {
+        margin: 0 0 14px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        background: #fff;
+      }
+
+      .page img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .page-label {
+        padding: 8px 12px;
+        border-top: 1px solid #f3f4f6;
+        color: #6b7280;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .floating {
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        z-index: 30;
+      }
+
+      .floating .button {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      @media (max-width: 720px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .title {
+          white-space: normal;
+        }
+
+        .section-nav {
+          top: 93px;
+        }
+
+        .section-heading {
+          top: 145px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="top"></div>
+    <div class="topbar">
+      <div class="title">价目册</div>
+      <select id="sectionSelect" class="section-select" aria-label="项目跳转"></select>
+      <a class="button" href="./price-book-lite.pdf" target="_blank" rel="noreferrer">下载版PDF</a>
+    </div>
+
+    <nav id="sectionNav" class="section-nav"></nav>
+
+    <div class="hint">按项目跳转，打开更快。右上角可下载轻量 PDF 版本。</div>
+
+    <main id="pages" class="pages"></main>
+
+    <div class="floating">
+      <a class="button" href="#top">回顶部</a>
+    </div>
+
+    <script>
+      const totalPages = 108;
+      const sections = [
+        { name: "品牌介绍", start: 4, end: 14 },
+        { name: "品项价格", start: 15, end: 25 },
+        { name: "新客卡", start: 26, end: 29 },
+        { name: "痛症调理", start: 30, end: 41 },
+        { name: "体质调理", start: 42, end: 55 },
+        { name: "中医美容", start: 56, end: 75 },
+        { name: "中医妇科", start: 76, end: 92 },
+        { name: "产品系列", start: 93, end: 108 }
+      ];
+
+      const pagesEl = document.getElementById("pages");
+      const sectionSelectEl = document.getElementById("sectionSelect");
+      const sectionNavEl = document.getElementById("sectionNav");
+
+      function pageId(page) {
+        return `page-${String(page).padStart(3, "0")}`;
+      }
+
+      function pageSrc(page) {
+        return `./pages/${pageId(page)}.jpg`;
+      }
+
+      function getSectionByPage(page) {
+        return sections.find((section) => page >= section.start && page <= section.end) || sections[0];
+      }
+
+      function scrollToPage(page) {
+        const el = document.getElementById(pageId(page));
+        if (!el) return;
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function scrollToSection(sectionName) {
+        const section = sections.find((item) => item.name === sectionName);
+        if (!section) return;
+        sectionSelectEl.value = section.name;
+        scrollToPage(section.start);
+      }
+
+      sections.forEach((section) => {
+        const option = document.createElement("option");
+        option.value = section.name;
+        option.textContent = section.name;
+        sectionSelectEl.appendChild(option);
+      });
+
+      sections.forEach((section) => {
+        const link = document.createElement("a");
+        link.className = "section-link";
+        link.href = `#${pageId(section.start)}`;
+        link.dataset.section = section.name;
+        link.textContent = section.name;
+        sectionNavEl.appendChild(link);
+
+        const block = document.createElement("section");
+        block.className = "section-block";
+        block.dataset.section = section.name;
+
+        const heading = document.createElement("h2");
+        heading.className = "section-heading";
+        heading.textContent = section.name;
+        block.appendChild(heading);
+
+        for (let page = section.start; page <= section.end; page += 1) {
+          const wrapper = document.createElement("article");
+          wrapper.className = "page";
+          wrapper.id = pageId(page);
+          wrapper.dataset.page = String(page);
+          wrapper.dataset.section = section.name;
+
+          const img = document.createElement("img");
+          img.src = pageSrc(page);
+          img.alt = `${section.name} 第 ${page} 页`;
+          img.loading = page <= 3 ? "eager" : "lazy";
+          img.decoding = "async";
+
+          const label = document.createElement("div");
+          label.className = "page-label";
+          label.textContent = `${section.name} · 第 ${page} 页 / 共 ${totalPages} 页`;
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(label);
+          block.appendChild(wrapper);
+        }
+
+        pagesEl.appendChild(block);
+      });
+
+      sectionSelectEl.addEventListener("change", (event) => {
+        scrollToSection(event.target.value);
+      });
+
+      function setActiveSection(name) {
+        document.querySelectorAll(".section-link").forEach((link) => {
+          link.classList.toggle("active", link.dataset.section === name);
+        });
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+          if (!visible) return;
+
+          const section = visible.target.dataset.section;
+
+          if (section) {
+            sectionSelectEl.value = section;
+            setActiveSection(section);
+          }
+        },
+        { threshold: 0.55 }
+      );
+
+      document.querySelectorAll(".page").forEach((page) => observer.observe(page));
+
+      sectionSelectEl.value = "品牌介绍";
+      setActiveSection("品牌介绍");
+    </script>
+  </body>
+</html>
