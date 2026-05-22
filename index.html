@@ -2,11 +2,20 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
     <title>价目册</title>
     <style>
       :root {
         color-scheme: light;
+        --bg: #f3f4f6;
+        --card: #ffffff;
+        --line: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --strong: #111827;
+        --nav-width: 220px;
       }
 
       * {
@@ -20,37 +29,80 @@
       body {
         margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
-        background: #f3f4f6;
-        color: #111827;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .access-screen {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .access-card {
+        width: min(100%, 520px);
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--card);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      }
+
+      .access-title {
+        margin: 0 0 10px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .access-text {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .shell {
+        min-height: 100vh;
       }
 
       .topbar {
         position: sticky;
         top: 0;
-        z-index: 30;
+        z-index: 40;
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 10px 12px;
+        padding: 12px 16px;
         background: rgba(255, 255, 255, 0.96);
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--line);
         backdrop-filter: blur(10px);
       }
 
-      .title {
+      .title-wrap {
         min-width: 0;
         flex: 1;
-        font-size: 16px;
-        font-weight: 600;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      }
+
+      .title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .subtext {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 13px;
       }
 
       .button,
       .section-select {
-        min-height: 38px;
-        border: 0;
+        min-height: 42px;
         border-radius: 10px;
         font-size: 14px;
       }
@@ -60,30 +112,47 @@
         align-items: center;
         justify-content: center;
         padding: 0 14px;
-        background: #111827;
+        border: 0;
+        background: var(--strong);
         color: #fff;
         text-decoration: none;
         white-space: nowrap;
       }
 
       .section-select {
-        min-width: 140px;
+        min-width: 150px;
         padding: 0 12px;
-        background: #fff;
         border: 1px solid #d1d5db;
+        background: #fff;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
       }
 
       .section-nav {
         position: sticky;
-        top: 59px;
-        z-index: 25;
+        top: 67px;
+        z-index: 35;
         display: flex;
         gap: 8px;
-        padding: 10px 12px;
+        padding: 10px 16px;
         overflow-x: auto;
         background: rgba(243, 244, 246, 0.96);
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--line);
         backdrop-filter: blur(10px);
+      }
+
+      .nav-label {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0;
       }
 
       .section-link {
@@ -92,23 +161,27 @@
         justify-content: center;
         padding: 10px 14px;
         border-radius: 999px;
-        background: #fff;
         border: 1px solid #d1d5db;
-        color: #111827;
+        background: #fff;
+        color: var(--text);
         text-decoration: none;
         font-size: 14px;
         white-space: nowrap;
       }
 
       .section-link.active {
-        background: #111827;
+        border-color: var(--strong);
+        background: var(--strong);
         color: #fff;
-        border-color: #111827;
+      }
+
+      .content {
+        min-width: 0;
       }
 
       .hint {
-        padding: 10px 16px 0;
-        color: #6b7280;
+        padding: 12px 16px 0;
+        color: var(--muted);
         font-size: 13px;
         text-align: center;
       }
@@ -116,24 +189,24 @@
       .pages {
         width: min(100%, 980px);
         margin: 0 auto;
-        padding: 16px 12px 40px;
+        padding: 16px 12px 56px;
       }
 
       .section-block {
-        margin-bottom: 18px;
+        margin-bottom: 20px;
       }
 
       .section-heading {
         position: sticky;
-        top: 111px;
-        z-index: 10;
+        top: 119px;
+        z-index: 20;
         margin: 0 0 10px;
-        padding: 10px 12px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.92);
-        border: 1px solid #e5e7eb;
-        font-size: 15px;
-        font-weight: 600;
+        background: rgba(255, 255, 255, 0.94);
+        font-size: 16px;
+        font-weight: 700;
       }
 
       .page {
@@ -153,62 +226,126 @@
       .page-label {
         padding: 8px 12px;
         border-top: 1px solid #f3f4f6;
-        color: #6b7280;
+        color: var(--muted);
         font-size: 13px;
         text-align: center;
       }
 
       .floating {
         position: fixed;
-        right: 12px;
-        bottom: 12px;
-        z-index: 30;
+        right: 14px;
+        bottom: 14px;
+        z-index: 40;
       }
 
       .floating .button {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
       }
 
-      @media (max-width: 720px) {
+      @media (min-width: 768px) and (max-width: 1366px) {
+        .layout {
+          display: grid;
+          grid-template-columns: var(--nav-width) minmax(0, 1fr);
+          gap: 0;
+          align-items: start;
+        }
+
+        .sidebar {
+          position: sticky;
+          top: 67px;
+          display: block;
+          height: calc(100vh - 67px);
+          padding: 20px 12px 24px 16px;
+          border-right: 1px solid var(--line);
+          overflow-y: auto;
+          background: rgba(243, 244, 246, 0.96);
+        }
+
+        .sidebar .section-link {
+          width: 100%;
+          justify-content: flex-start;
+          border-radius: 12px;
+          margin-bottom: 8px;
+          padding: 12px 14px;
+        }
+
+        .section-nav {
+          display: none;
+        }
+
+        .content {
+          padding: 0 10px 0 0;
+        }
+
+        .pages {
+          width: min(100%, 920px);
+          margin: 0 auto;
+          padding: 18px 18px 56px;
+        }
+
+        .section-heading {
+          top: 83px;
+        }
+      }
+
+      @media (max-width: 767px) {
         .topbar {
           align-items: flex-start;
           flex-direction: column;
         }
 
-        .title {
-          white-space: normal;
-        }
-
         .section-nav {
-          top: 93px;
+          top: 98px;
         }
 
         .section-heading {
-          top: 145px;
+          top: 150px;
         }
       }
     </style>
   </head>
   <body>
-    <div id="top"></div>
-    <div class="topbar">
-      <div class="title">价目册</div>
-      <select id="sectionSelect" class="section-select" aria-label="项目跳转"></select>
-      <a class="button" href="./price-book-lite.pdf" target="_blank" rel="noreferrer">下载版PDF</a>
+    <div id="accessScreen" class="access-screen hidden">
+      <div class="access-card">
+        <h1 class="access-title">此链接不可直接访问</h1>
+        <p class="access-text">
+          这个价目册不是公开搜索页。只有拿到专用分享链接的人才能打开。请让发送人重新发你完整链接。
+        </p>
+      </div>
     </div>
 
-    <nav id="sectionNav" class="section-nav"></nav>
+    <div id="appShell" class="shell hidden">
+      <div id="top"></div>
+      <header class="topbar">
+        <div class="title-wrap">
+          <h1 class="title">门店价目册</h1>
+          <p class="subtext">项目导航版，适配手机与 iPad。公开搜索不可见。</p>
+        </div>
+        <select id="sectionSelect" class="section-select" aria-label="项目跳转"></select>
+        <a class="button" href="./price-book-lite.pdf" target="_blank" rel="noreferrer">下载版PDF</a>
+      </header>
 
-    <div class="hint">按项目跳转，打开更快。右上角可下载轻量 PDF 版本。</div>
+      <div class="layout">
+        <aside class="sidebar">
+          <p class="nav-label">项目导航</p>
+          <nav id="sectionNavDesktop"></nav>
+        </aside>
 
-    <main id="pages" class="pages"></main>
+        <div class="content">
+          <nav id="sectionNavMobile" class="section-nav"></nav>
+          <div class="hint">点项目直接跳转。只有带专用链接参数的人可以打开。</div>
+          <main id="pages" class="pages"></main>
+        </div>
+      </div>
 
-    <div class="floating">
-      <a class="button" href="#top">回顶部</a>
+      <div class="floating">
+        <a class="button" href="#top">回顶部</a>
+      </div>
     </div>
 
     <script>
-      const totalPages = 108;
+      const ACCESS_TOKEN = "Ag6EG4P0-qSQMZeFNPOFfAQe";
+      const TOTAL_PAGES = 108;
       const sections = [
         { name: "品牌介绍", start: 4, end: 14 },
         { name: "品项价格", start: 15, end: 25 },
@@ -220,9 +357,10 @@
         { name: "产品系列", start: 93, end: 108 }
       ];
 
-      const pagesEl = document.getElementById("pages");
-      const sectionSelectEl = document.getElementById("sectionSelect");
-      const sectionNavEl = document.getElementById("sectionNav");
+      function isAuthorized() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("k") === ACCESS_TOKEN;
+      }
 
       function pageId(page) {
         return `page-${String(page).padStart(3, "0")}`;
@@ -245,62 +383,18 @@
       function scrollToSection(sectionName) {
         const section = sections.find((item) => item.name === sectionName);
         if (!section) return;
-        sectionSelectEl.value = section.name;
+        document.getElementById("sectionSelect").value = section.name;
         scrollToPage(section.start);
       }
 
-      sections.forEach((section) => {
-        const option = document.createElement("option");
-        option.value = section.name;
-        option.textContent = section.name;
-        sectionSelectEl.appendChild(option);
-      });
-
-      sections.forEach((section) => {
+      function createNavLink(sectionName, startPage) {
         const link = document.createElement("a");
         link.className = "section-link";
-        link.href = `#${pageId(section.start)}`;
-        link.dataset.section = section.name;
-        link.textContent = section.name;
-        sectionNavEl.appendChild(link);
-
-        const block = document.createElement("section");
-        block.className = "section-block";
-        block.dataset.section = section.name;
-
-        const heading = document.createElement("h2");
-        heading.className = "section-heading";
-        heading.textContent = section.name;
-        block.appendChild(heading);
-
-        for (let page = section.start; page <= section.end; page += 1) {
-          const wrapper = document.createElement("article");
-          wrapper.className = "page";
-          wrapper.id = pageId(page);
-          wrapper.dataset.page = String(page);
-          wrapper.dataset.section = section.name;
-
-          const img = document.createElement("img");
-          img.src = pageSrc(page);
-          img.alt = `${section.name} 第 ${page} 页`;
-          img.loading = page <= 3 ? "eager" : "lazy";
-          img.decoding = "async";
-
-          const label = document.createElement("div");
-          label.className = "page-label";
-          label.textContent = `${section.name} · 第 ${page} 页 / 共 ${totalPages} 页`;
-
-          wrapper.appendChild(img);
-          wrapper.appendChild(label);
-          block.appendChild(wrapper);
-        }
-
-        pagesEl.appendChild(block);
-      });
-
-      sectionSelectEl.addEventListener("change", (event) => {
-        scrollToSection(event.target.value);
-      });
+        link.href = `#${pageId(startPage)}`;
+        link.dataset.section = sectionName;
+        link.textContent = sectionName;
+        return link;
+      }
 
       function setActiveSection(name) {
         document.querySelectorAll(".section-link").forEach((link) => {
@@ -308,28 +402,92 @@
         });
       }
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      function boot() {
+        const accessScreen = document.getElementById("accessScreen");
+        const appShell = document.getElementById("appShell");
 
-          if (!visible) return;
+        if (!isAuthorized()) {
+          accessScreen.classList.remove("hidden");
+          return;
+        }
 
-          const section = visible.target.dataset.section;
+        appShell.classList.remove("hidden");
 
-          if (section) {
-            sectionSelectEl.value = section;
-            setActiveSection(section);
+        const pagesEl = document.getElementById("pages");
+        const sectionSelectEl = document.getElementById("sectionSelect");
+        const sectionNavDesktopEl = document.getElementById("sectionNavDesktop");
+        const sectionNavMobileEl = document.getElementById("sectionNavMobile");
+
+        sections.forEach((section) => {
+          const option = document.createElement("option");
+          option.value = section.name;
+          option.textContent = section.name;
+          sectionSelectEl.appendChild(option);
+
+          sectionNavDesktopEl.appendChild(createNavLink(section.name, section.start));
+          sectionNavMobileEl.appendChild(createNavLink(section.name, section.start));
+
+          const block = document.createElement("section");
+          block.className = "section-block";
+          block.dataset.section = section.name;
+
+          const heading = document.createElement("h2");
+          heading.className = "section-heading";
+          heading.textContent = section.name;
+          block.appendChild(heading);
+
+          for (let page = section.start; page <= section.end; page += 1) {
+            const wrapper = document.createElement("article");
+            wrapper.className = "page";
+            wrapper.id = pageId(page);
+            wrapper.dataset.page = String(page);
+            wrapper.dataset.section = section.name;
+
+            const img = document.createElement("img");
+            img.src = pageSrc(page);
+            img.alt = `${section.name} 第 ${page} 页`;
+            img.loading = page <= 6 ? "eager" : "lazy";
+            img.decoding = "async";
+
+            const label = document.createElement("div");
+            label.className = "page-label";
+            label.textContent = `${section.name} · 第 ${page} 页 / 共 ${TOTAL_PAGES} 页`;
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(label);
+            block.appendChild(wrapper);
           }
-        },
-        { threshold: 0.55 }
-      );
 
-      document.querySelectorAll(".page").forEach((page) => observer.observe(page));
+          pagesEl.appendChild(block);
+        });
 
-      sectionSelectEl.value = "品牌介绍";
-      setActiveSection("品牌介绍");
+        sectionSelectEl.addEventListener("change", (event) => {
+          scrollToSection(event.target.value);
+        });
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+            if (!visible) return;
+
+            const currentPage = Number(visible.target.dataset.page);
+            const currentSection = getSectionByPage(currentPage);
+            sectionSelectEl.value = currentSection.name;
+            setActiveSection(currentSection.name);
+          },
+          { threshold: 0.55 }
+        );
+
+        document.querySelectorAll(".page").forEach((page) => observer.observe(page));
+
+        sectionSelectEl.value = "品牌介绍";
+        setActiveSection("品牌介绍");
+      }
+
+      boot();
     </script>
   </body>
 </html>
