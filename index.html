@@ -243,48 +243,65 @@
       }
 
       @media (min-width: 768px) and (max-width: 1366px) {
-        .layout {
-          display: grid;
-          grid-template-columns: var(--nav-width) minmax(0, 1fr);
-          gap: 0;
-          align-items: start;
+        .topbar {
+          padding: 10px 12px;
         }
 
+        .title {
+          font-size: 16px;
+        }
+
+        .subtext,
+        .hint,
         .sidebar {
-          position: sticky;
-          top: 67px;
-          display: block;
-          height: calc(100vh - 67px);
-          padding: 20px 12px 24px 16px;
-          border-right: 1px solid var(--line);
-          overflow-y: auto;
-          background: rgba(243, 244, 246, 0.96);
-        }
-
-        .sidebar .section-link {
-          width: 100%;
-          justify-content: flex-start;
-          border-radius: 12px;
-          margin-bottom: 8px;
-          padding: 12px 14px;
-        }
-
-        .section-nav {
           display: none;
         }
 
+        .section-select {
+          min-width: 128px;
+          max-width: 150px;
+          min-height: 38px;
+          font-size: 13px;
+        }
+
+        .section-nav {
+          top: 63px;
+          gap: 6px;
+          padding: 8px 10px;
+        }
+
+        .section-link {
+          padding: 8px 12px;
+          font-size: 13px;
+        }
+
         .content {
-          padding: 0 10px 0 0;
+          padding: 0;
         }
 
         .pages {
-          width: min(100%, 920px);
-          margin: 0 auto;
-          padding: 18px 18px 56px;
+          width: 100%;
+          max-width: 1180px;
+          padding: 10px 10px 56px;
+        }
+
+        .section-block {
+          margin-bottom: 14px;
         }
 
         .section-heading {
-          top: 83px;
+          top: 108px;
+          padding: 10px 12px;
+          font-size: 15px;
+        }
+
+        .page {
+          margin-bottom: 10px;
+        }
+
+        .page-label {
+          font-size: 12px;
+          padding: 6px 10px;
         }
       }
 
