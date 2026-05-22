@@ -66,6 +66,30 @@
         line-height: 1.7;
       }
 
+      .access-form {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .password-input {
+        flex: 1;
+        min-height: 44px;
+        padding: 0 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        background: #fff;
+        color: var(--text);
+        font-size: 16px;
+      }
+
+      .access-error {
+        min-height: 20px;
+        margin-top: 10px;
+        color: #b91c1c;
+        font-size: 13px;
+      }
+
       .shell {
         min-height: 100vh;
       }
@@ -325,12 +349,17 @@
     </style>
   </head>
   <body>
-    <div id="accessScreen" class="access-screen hidden">
+      <div id="accessScreen" class="access-screen hidden">
       <div class="access-card">
-        <h1 class="access-title">此链接不可直接访问</h1>
+        <h1 class="access-title">请输入访问密码</h1>
         <p class="access-text">
-          这个价目册不是公开搜索页。只有拿到专用分享链接的人才能打开。请让发送人重新发你完整链接。
+          这个价目册不是公开搜索页。需要专用链接和访问密码才能打开。
         </p>
+        <form id="accessForm" class="access-form">
+          <input id="passwordInput" class="password-input" type="password" placeholder="输入密码" autocomplete="current-password" />
+          <button class="button" type="submit">进入</button>
+        </form>
+        <div id="accessError" class="access-error"></div>
       </div>
     </div>
 
@@ -364,6 +393,8 @@
 
     <script>
       const ACCESS_TOKEN = "Ag6EG4P0-qSQMZeFNPOFfAQe";
+      const ACCESS_PASSWORD = "xy881688";
+      const ACCESS_STORAGE_KEY = "price-book-site-auth";
       const TOTAL_PAGES = 108;
       const sections = [
         { name: "品牌介绍", start: 4, end: 14 },
@@ -376,9 +407,18 @@
         { name: "产品系列", start: 93, end: 108 }
       ];
 
-      function isAuthorized() {
+      function hasValidLink() {
         const params = new URLSearchParams(window.location.search);
         return params.get("k") === ACCESS_TOKEN;
+      }
+
+      function hasValidPassword() {
+        return window.sessionStorage.getItem(ACCESS_STORAGE_KEY) === "ok";
+      }
+
+      function revealApp() {
+        document.getElementById("accessScreen").classList.add("hidden");
+        document.getElementById("appShell").classList.remove("hidden");
       }
 
       function pageId(page) {
@@ -424,9 +464,31 @@
       function boot() {
         const accessScreen = document.getElementById("accessScreen");
         const appShell = document.getElementById("appShell");
+        const accessForm = document.getElementById("accessForm");
+        const passwordInput = document.getElementById("passwordInput");
+        const accessError = document.getElementById("accessError");
 
-        if (!isAuthorized()) {
+        if (!hasValidLink()) {
           accessScreen.classList.remove("hidden");
+          accessForm.classList.add("hidden");
+          accessError.textContent = "这个链接无效，请让发送人重新发完整链接。";
+          return;
+        }
+
+        if (!hasValidPassword()) {
+          accessScreen.classList.remove("hidden");
+          passwordInput.focus();
+          accessForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (passwordInput.value === ACCESS_PASSWORD) {
+              window.sessionStorage.setItem(ACCESS_STORAGE_KEY, "ok");
+              accessError.textContent = "";
+              revealApp();
+            } else {
+              accessError.textContent = "密码不对。";
+              passwordInput.select();
+            }
+          });
           return;
         }
 
