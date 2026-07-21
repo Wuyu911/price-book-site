@@ -1,0 +1,25 @@
+{
+  "name": "馨园时珍门店价目册",
+  "short_name": "门店价目册",
+  "description": "馨园时珍门店项目价目册",
+  "start_url": "./?k=Ag6EG4P0-qSQMZeFNPOFfAQe",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e8edf1",
+  "theme_color": "#8f1d2c",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
